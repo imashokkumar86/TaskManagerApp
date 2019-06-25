@@ -1,0 +1,120 @@
+<div class="container">
+  <div class="row main" #panel>
+    <form class="form-horizontal" #f="ngForm">
+    
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="taskName">Task:</label>
+        <div class="col-sm-4">
+          <input type="text" class="form-control" id="taskName" name="taskName" [(ngModel)]="taskDetail.name" required placeholder="Enter Task">
+        </div>
+      </div>
+     
+      <div class="form-group">
+        <label class="control-label col-sm-2"></label>
+        <div class="col-sm-4">
+          <label class="checkbox-inline">
+            <input type="checkbox" #showParentTaskCheckbox (change)="onParentTaskSelected($event)">Parent Task</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="taskpriority">Priority:(0-25)</label>
+        <div class="col-sm-4 slidecontainer">
+          <input type="range" min="1" max="25" [(ngModel)]="taskDetail.priority" [disabled]="isParentTaskSelected" class="slider" id="rangePriority1"
+            name="rangePriority1">
+
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="taskStartDate">Parent Task :</label>
+        <div class="col-sm-3">
+          <input type="text" class="form-control" maxlength="100" id="ParentTask" name="ParentTask" [ngModel]="parentTaskName" readonly
+            required placeholder="Select Parent Task">
+        </div>
+        <div class="col-sm-1">
+          <a class="btn btn-s" #showParentModalClick (click)="onSearchParent()" id="showParentTaskModal" *ngIf="!isParentTaskSelected"
+            data-toggle="modal" data-target="#parentTaskModal">
+            <span class="glyphicon glyphicon-search"></span>Search</a>
+          <a class="btn btn-s" #showParentModalClick (click)="onSearchParent()" id="showParentTaskModal" disabled *ngIf="isParentTaskSelected"
+            data-toggle="modal" data-target="#parentTaskModal">
+            <span class="glyphicon glyphicon-search"></span>Search</a>
+
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="taskStartDate">Start Date:</label>
+        <div class="col-sm-4">
+          <input type="date" class="form-control" id="taskStartDate" [ngModel]="taskDetail.startDate |date:'yyyy-MM-dd'" (ngModelChange)="taskDetail.startDate=$event"
+            name="taskStartDate" [readonly]="isParentTaskSelected" required placeholder="Enter start date">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-sm-2" for="taskEndDate">End Date:</label>
+        <div class="col-sm-4">
+          <input type="date" class="form-control" [ngModel]="taskDetail.endDate |date:'yyyy-MM-dd'" (ngModelChange)="taskDetail.endDate=$event"
+            id="taskEndDate" name="taskEndDate" required [readonly]="isParentTaskSelected" placeholder="Enter end date">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-4">
+          <button type="submit" [disabled]="onValidate()" (click)="onAddTask()" class="btn btn-primary">Add Task</button> &nbsp;
+          <button type="button" class="btn btn-warning" (click)="onResetTask()">Reset</button>
+        </div>
+      </div>
+
+      
+
+      <div id="parentTaskModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+        
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" (click)="closeModal()" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Parent Task</h4>
+            </div>
+            <div class="modal-body">
+              <div class="form-group col-sm-5">
+                <div>
+                  <input type="text" class="form-control" style="width: 100%" id="userSearch" name="userSearch" placeholder="Search" [(ngModel)]="parentTaskSearch">
+                </div>
+              </div>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Task Id</th>
+                    <th>Task Name</th>
+                   
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let taskDetail of parentTaskDetails | taskmgrSearch: parentTaskSearch">
+                  <tr>
+                    <td>{{taskDetail.parentId}}</td>
+                    <td>{{taskDetail.parentTask}}</td>
+                    
+                    <td class="text-center">
+                      <a class='btn btn-info btn-xs' data-dismiss="modal" (click)="onSelectParentTask(taskDetail)">
+                        <span class="glyphicon glyphicon-edit"></span>Select</a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" (click)="closeModal()" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="alert alert-success" *ngIf="success">
+        <strong>Success!</strong> {{results}}
+      </div>
+      <div class="alert alert-danger" *ngIf="failure">
+        <strong>Failure!</strong> {{results}}
+      </div>
+    </form>
+  </div>
+</div>

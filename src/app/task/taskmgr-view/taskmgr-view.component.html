@@ -1,0 +1,61 @@
+<div class="container">
+  <div class="row main" #panel>
+    <form class="form-horizontal">
+      <div class="form-group">
+        
+        <div class="form-group col-sm-2">
+          <label class="control-label" style="width: 100%">Sort Task By: &nbsp;</label>
+        </div>
+        <div class="form-group col-sm-5" style="margin-bottom: 10px;">
+          <a class='btn btn-info btn-md' (click)="sortTask('startDate')">Start Date</a>&nbsp;
+          <a class='btn btn-info btn-md' (click)="sortTask('endDate')">End Date</a>&nbsp;
+          <a class='btn btn-info btn-md' (click)="sortTask('priority')">Priority</a>&nbsp;
+          <a class='btn btn-info btn-md' (click)="sortTask('activeStatus')">Completed</a>&nbsp;
+        </div>
+      </div>
+
+    </form>
+    <br />
+    <p class="alert alert-danger" *ngIf="showError">{{results}}</p>
+    <div class="row col-md-12 col-md-offset-0">
+      <table class="table table-hover">
+        <tbody >
+          <tr>
+            <th>Task</th>
+            <th>Parent</th>
+            <th>Priority</th>
+            <th>Start</th>
+            <th>End</th>
+            <th></th>
+          </tr>
+          <tr *ngFor="let taskDetail of taskDetailsFiltered | taskmgrSort:path:order">
+            <td>{{taskDetail.name}}
+              <input type="hidden" [(ngModel)]="taskDetail.id" #taskId>
+            </td>
+            <td>{{getParentTaskName(taskDetail.parentId)}}</td>
+            <td>{{taskDetail.priority}}</td>
+            <td>{{taskDetail.startDate|date:'dd/MM/yyyy'}}</td>
+            <td>{{taskDetail.endDate|date :'dd/MM/yyyy'}}</td>
+            <td class="text-center">
+              <a class='btn btn-info btn-xs' *ngIf="taskDetail.activeStatus" (click)="edit(taskDetail.id)">
+                <span class="glyphicon glyphicon-edit"></span> Edit</a>
+              <a class='btn btn-info btn-xs' disabled *ngIf="taskDetail.endTask">
+                <span class="glyphicon glyphicon-edit"></span> Edit</a> &nbsp;
+              <a (click)="endTask(taskDetail.id)" *ngIf="taskDetail.activeStatus" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-remove"></span> End Task</a>
+              <a disabled *ngIf="taskDetail.endTask" class="btn btn-danger btn-xs">
+                <span class="glyphicon glyphicon-remove"></span> End Task</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="alert alert-success" *ngIf="success">
+      <strong>Success!</strong> {{results}}
+    </div>
+    <div class="alert alert-danger" *ngIf="failure">
+      <strong>Failure!</strong> {{results}}
+    </div>
+  </div>
+</div>
